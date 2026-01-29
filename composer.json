@@ -54,7 +54,7 @@
         "post-install-cmd": [],
         "post-update-cmd": [],
         "test": "vendor/bin/phpunit",
-        "style": "vendor/bin/phpcs",
+        "style": "vendor/bin/phpcs --standard=phpcs.xml -p",
         "fixture": "bin/console app:setup-db",
         "cache": "bin/console cache:clear"
     },
