@@ -1,0 +1,55 @@
+# yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
+
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+# See also https://symfony.com/doc/current/service_container/import.html
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+parameters:
+
+    db_host: '%env(MYSQL_HOST)%'
+    db_name: '%env(MYSQL_DATABASE)%'
+    db_user: '%env(MYSQL_USER)%'
+    db_pass: '%env(MYSQL_PASSWORD)%'
+
+    sql_dir: '%kernel.project_dir%/sql'
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/Model'
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+
+    PDO:
+        class: PDO
+        autowire: true
+        factory: [App\Service\PdoFactory, 'create']
+        arguments:
+            $dbHost: '%db_host%'
+            $dbName: '%db_name%'
+            $dbUser: '%db_user%'
+            $dbPass: '%db_pass%'
+
+    App\Service\UserNotification\UserNotificationService:
+        arguments:
+            -
+                - '@App\Service\UserNotification\Rule\ConfigureAndroidDeviceRule'
+
+    App\Utils\Clock\ClockInterface:
+        class: App\Utils\Clock\SystemClock
+
+when@test:
+    services:
+        logger:
+            class: Psr\Log\NullLogger

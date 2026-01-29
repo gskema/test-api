@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<ruleset name="App">
+    <file>src</file>
+    <file>tests</file>
+
+    <arg name="extensions" value="php"/>
+    <arg name="cache" value="var/phpcs.cache" />
+    <rule ref="PSR12">
+        <exclude name="Generic.Files.LineLength" />
+    </rule>
+
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+</ruleset>
